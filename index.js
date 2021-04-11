@@ -78,12 +78,11 @@ downloadDictionary('https://raw.githubusercontent.com/Zhavgarat/dictionary/main/
     });
 });
 
-const server = http.createServer(dictionaryHandler);
+const app = http.createServer(dictionaryHandler);
 
-server.listen(8080, (err) => {
-  if (err) {
-    return console.log('error starting server: ' + err);
-  }
-
-  console.log('server is listening on 8080');
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(process.env.PORT ?? 9000, (err) => {
+    if (err) return console.log(`error starting server: ${err}`);
+  });
+}); 
+ module.exports = app;
