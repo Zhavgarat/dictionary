@@ -1,0 +1,47 @@
+on: push
+
+jobs:
+  eslint-and-tests:
+    name: Run linter and tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          check-latest: true
+      - uses: stefanoeb/eslint-action@1.0.2
+        with:
+          files: index.js
+      - run: npm test
+
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    needs: eslint-and-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: zhavgarat/dictionary
+          tag_with_ref: true
+
+  deploy:
+    name: Deploy to Heroku
+    runs-on: ubuntu-latest
+    needs: [eslint-and-tests, push_to_registry]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: 'zhavgarat-web-api'
+          heroku_email: 's.zhavgarat@mail.ru'
+          usedocker: true
+          delay: 5
+          healthcheck: 'https://zhavgarat-web-api.herokuapp.com/readyz'
+          checkstring: 'OK'
