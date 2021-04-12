@@ -27,7 +27,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: zhavgarat/dictionary
+          repository: zhavgarat/dockerfile
           tag_with_ref: true
 
   deploy:
