@@ -3,21 +3,12 @@ const app = require('./index');
 
 describe('Search for definition', () => {
   test('[Positive] Get existing definition (GET /субъект)', async () => {
-    const term = 'api';
+    const term = 'субъект';
     const response = await request(app).get(`/${term}`);
     expect(response.statusCode).toBe(200);
     expect(response.body.error).toBeFalsy();
     expect(response.body.term).toBe(term.toUpperCase());
     expect(response.body.definition).toBe('это тот, кто проходит аутентификацию (авторизированный пользователь.');
-  });
-
-  test('[Positive] Get existing definition (GET /аутентификация)', async () => {
-    const term = 'аутентификация';
-    const response = await request(app).get(`/${encodeURI(term)}`);
-    expect(response.statusCode).toBe(200);
-    expect(response.body.error).toBeFalsy();
-    expect(response.body.term).toBe(term.toUpperCase());
-    expect(response.body.definition).toBe('процесс проверки принадлежности субъекту прав доступа к информационным ресурсам системы или веб-сайта в соответствии с предъявленным им идентификатором; подтверждение (установление) подлинности субъекта.');
   });
 
   test('[Negative] Get not existing definition (GET /login)', async () => {
